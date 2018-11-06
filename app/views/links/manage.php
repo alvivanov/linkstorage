@@ -6,9 +6,9 @@
     <label for="link">Ссылка</label>
     <input type="text" name="link" value="<?php echo isset($link['link']) ? $link['link'] : ''; ?>" <?=$disabled?>>
     <label for="description">Описание</label>
-    <textarea name="description" value="<?php echo isset($link['description']) ? $link['description'] : ''; ?>" <?=$disabled?>></textarea>
+    <textarea name="description" <?=$disabled?>><?php echo isset($link['description']) ? $link['description'] : ''; ?></textarea>
     <label for="private">Приватность</label>
-    <input type="checkbox" name="private" <?php echo isset($link['private'])? 'checked' : ''; ?> <?=$disabled?>>
+    <input type="checkbox" name="private" <?php echo (isset($link['private']) && $link['private'] == 1) ? 'checked' : ''; ?> <?=$disabled?>>
     <input type="hidden" name="action" value="<?php echo isset($action) ? $action : ''; ?>">
     <input type="hidden" name="id" value="<?php echo isset($link['id']) ? $link['id'] : ''; ?>">
     <br>
