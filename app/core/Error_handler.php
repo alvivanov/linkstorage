@@ -1,0 +1,12 @@
+<?php
+
+    Class Error_handler extends Controller
+    {
+        public function handle($status)
+        {
+            $data['status'] = $status;
+            $data['title'] = 'Ошибка ' . $status;
+            http_response_code($status);
+            $this->load->view('template/error_template', $data);
+        }
+    }
