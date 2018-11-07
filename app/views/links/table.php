@@ -8,11 +8,11 @@
         </thead>
         <?php foreach($links as $link): ?>
             <tr>
-                <td><a href="/links/view/<?=$link['id']?>"><?=$link['title']?></a></td>
-                <td><a href="<?=$link['url']?>" target="_blank"><?=$link['link']?></a></td>
+                <td><a class="title" href="/links/view/<?=$link['id']?>"><?=$link['title']?></a></td>
+                <td><a class="link" href="<?=$link['url']?>" target="_blank"><?=$link['link']?></a></td>
                 <td>
-                    <a href="/links/delete/<?=$link['id']?>">Delete</a>
-                    <a href="/links/edit/<?=$link['id']?>">Edit</a>
+                    <a class="delete" id="<?=$link['id']?>">Delete</a>
+                    <a class="edit" href="/links/edit/<?=$link['id']?>">Edit</a>
                 </td>
             </tr>
         <?php endforeach; ?>
@@ -27,4 +27,11 @@
     <p>Статус: </p><?=$status?>
 <?php endif; ?>
 
+
+<script>
+    $('.delete').on('click', function () {
+        let a = confirm('Удалить ссылку "' + $(this).parents('tr').find('.title').text() + '"?');
+        if(a) location.href = '/links/delete/' + $(this).attr('id');
+    });
+</script>
 <?php init_footer(); ?>

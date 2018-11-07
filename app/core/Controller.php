@@ -23,4 +23,16 @@ class Controller
             $this->router->redirect('/' . strtolower($class));
         }
     }
+
+    public function get_status(){
+        if(!isset($_SESSION['status'])) return null;
+
+        $status = $_SESSION['status'];
+        unset($_SESSION['status']);
+        return $status;
+    }
+
+    public function set_status(string $data){
+        $_SESSION['status'] = $data;
+    }
 }
