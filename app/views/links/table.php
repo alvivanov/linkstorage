@@ -22,4 +22,9 @@
 <?php endif; ?>
 <br>
 <a href="/links/add">Добавить ссылку</a>
+
+<?php if(isset($status)) : ?>
+    <p>Статус: </p><?=$status?>
+<?php endif; ?>
+
 <?php init_footer(); ?>

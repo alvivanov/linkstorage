@@ -12,7 +12,8 @@
             $private     = isset($data['private']) ? '1' : '0';
 
             $q = 'INSERT INTO links (title, link, description, private, user) values ("' . $title . '","' . $link . '","' . $description . '",' . $private . ', 0);';
-            return $this->db->query($q);
+            if(!$this->db->query($q)) return 'error';
+            else return 'success';
         }
 
         public function get(string $where = '')

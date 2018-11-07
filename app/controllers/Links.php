@@ -9,6 +9,11 @@
         }
 
         public function index(){
+            if(isset($_GET['status'])) {
+                if ($_GET['status'] === 'error') $data['status'] = 'Ошибка!';
+                elseif ($_GET['status'] === 'is_exist') $data['status'] = 'Ссылка уже существует!';
+                elseif ($_GET['status'] === 'success') $data['status'] = 'Ссылка добавлена!';
+            }
             $data['title'] = 'Мои ссылки';
             $data['links'] = $this->links_model->get('user = 0');
             $this->load->view('links/table', $data);
@@ -66,14 +71,26 @@
         }
 
         public function do_action(){
+            $response = [];
             if(!empty($_POST)) {
                 $data = $_POST;
-                if($data['action'] == 'add') $this->links_model->add($data);
+                if($data['action'] == 'add'){
+                    if($this->is_link_exist($data['link'])) $response['status'] = 'is_exist';
+                    else $response['status'] = $this->links_model->add($data);
+                }
                 elseif($data['action'] == 'update') $this->links_model->update($data);
-                elseif($data['action'] == 'edit' && !empty($data['id'])) $this->router->redirect('/links/edit/' . $data['id']);
-                else $this->router->redirect('/links');
+                elseif($data['action'] == 'edit' && !empty($data['id'])) $this->router->redirect('/links/edit/' . $data['id'], $response);
+                else $this->router->redirect('/links', $response);
             }
-            $this->router->redirect('/links/');
+            $this->router->redirect('/links/', $response);
+        }
+
+        private function is_link_exist($current_link){
+            $links = $this->links_model->get();
+            foreach ($links as $link) {
+                if($link['link'] === $current_link) return true;
+            }
+            return false;
         }
 
         public function delete($id){

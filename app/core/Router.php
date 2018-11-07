@@ -43,9 +43,12 @@ class Router
         return explode('/', filter_var(rtrim(ucfirst($url), '/'), FILTER_SANITIZE_URL));
     }
 
-    public function redirect(string $destination)
+    public function redirect(string $destination, array $data = [])
     {
-        header('Location: ' . $destination);
+        $query = '';
+        if(!empty($data)) $query = '?' . http_build_query($data);
+
+        header('Location: ' . $destination . $query);
         exit;
     }
 }
