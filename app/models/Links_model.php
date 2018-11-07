@@ -9,7 +9,7 @@
             $link        = /*$this->db->quote(*/$data['link'];
             $title       = !empty($data['title']) ? /*$this->db->quote(*/$data['title'] : $data['link'];
             $description = !empty($data['description']) ? /*$this->db->quote(*/$data['description'] : '';
-            $private     = !empty($data['private']) ? '1' : '0';
+            $private     = isset($data['private']) ? '1' : '0';
 
             $q = 'INSERT INTO links (title, link, description, private, user) values ("' . $title . '","' . $link . '","' . $description . '",' . $private . ', 0);';
             if(!$this->db->query($q)) return 'error';
