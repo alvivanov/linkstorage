@@ -11,7 +11,6 @@
         public function index(){
             if(isset($_GET['status'])) {
                 if ($_GET['status'] === 'error') $data['status'] = 'Ошибка!';
-                elseif ($_GET['status'] === 'is_exist') $data['status'] = 'Ссылка уже существует!';
                 elseif ($_GET['status'] === 'success') $data['status'] = 'Ссылка добавлена!';
             }
             $data['title'] = 'Мои ссылки';
@@ -63,6 +62,10 @@
 
 
         public function add(){
+            if(isset($_GET['status'])) {
+                if ($_GET['status'] === 'empty_link') $data['status'] = 'Необходимо заполнить поле "Ссылка"!';
+                elseif ($_GET['status'] === 'is_exist') $data['status'] = 'Ссылка уже существует!';
+            }
             $data['title'] = 'Добавление ссылки';
             $data['action'] = 'add';
             $data['disabled'] = '';
@@ -72,17 +75,25 @@
 
         public function do_action(){
             $response = [];
+            $method = '';
             if(!empty($_POST)) {
                 $data = $_POST;
                 if($data['action'] == 'add'){
-                    if($this->is_link_exist($data['link'])) $response['status'] = 'is_exist';
+                    if($this->is_link_exist($data['link'])){
+                        $response['status'] = 'is_exist';
+                        $method = 'add';
+                    }
+                    elseif(empty($data['link'])){
+                        $response['status'] = 'empty_link';
+                        $method = 'add';
+                    }
                     else $response['status'] = $this->links_model->add($data);
                 }
                 elseif($data['action'] == 'update') $this->links_model->update($data);
                 elseif($data['action'] == 'edit' && !empty($data['id'])) $this->router->redirect('/links/edit/' . $data['id'], $response);
                 else $this->router->redirect('/links', $response);
             }
-            $this->router->redirect('/links/', $response);
+            $this->router->redirect('/links/' . $method, $response);
         }
 
         private function is_link_exist($current_link){

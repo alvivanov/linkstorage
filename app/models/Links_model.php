@@ -5,6 +5,7 @@
         public function add($data)
         {
             if (empty($data)) return false;
+            if(empty($data['link'])) return 'empty_link';
 
             $link        = /*$this->db->quote(*/$data['link'];
             $title       = !empty($data['title']) ? /*$this->db->quote(*/$data['title'] : $data['link'];

@@ -14,5 +14,10 @@
     <br>
     <button type="submit"><?=$button_name?></button>
 </form>
+<?php if(isset($status)) : ?>
+    <br>
+    <p>Статус: </p><?=$status?>
+<?php endif; ?>
+
 
 <?php init_footer(); ?>
