@@ -15,13 +15,18 @@ class Loader
         $this->parent = $parent;
     }
 
-    public function view(string $name, array $data = []){
+    public function view(string $view, array $data = []){
         extract($data, EXTR_SKIP);
-        require_once 'app/views/' . $name . '.php';
+        require_once 'app/views/' . $view . '.php';
     }
 
-    public function model(string $name){
-        $name = ucfirst($name . '_model');
-        return $this->parent->{strtolower($name)} = new $name;
+    public function model(string $model){
+        $model = ucfirst($model . '_model');
+        return $this->parent->{strtolower($model)} = new $model;
+    }
+
+    public function controller(string $controller){
+        $controller = ucfirst($controller);
+        return $this->parent->{strtolower($controller)} = new $controller;
     }
 }

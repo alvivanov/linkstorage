@@ -24,7 +24,8 @@
 <a href="/links/add">Добавить ссылку</a>
 
 <?php if(isset($status)) : ?>
-    <p>Статус: </p><?=$status?>
+    <br><br>
+    <?=$status?>
 <?php endif; ?>
 
 

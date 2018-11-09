@@ -2,13 +2,14 @@
 
     class Main extends Controller
     {
-        public function index(){
-            if($this->request->get('main')){
-                $this->router->redirect('/');
-            }
-
+        public function __construct()
+        {
+            parent::__construct();
             $this->load->model('links');
-            $data['links'] = $this->links_model->get('private=0');
+        }
+
+        public function index(){
+            $data['links'] = $this->links_model->get();
             $data['title'] = 'Хранилище ссылок';
             $this->load->view('main/main', $data);
         }

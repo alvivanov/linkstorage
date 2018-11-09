@@ -2,6 +2,7 @@
 
     class Links extends Controller
     {
+
         public function __construct()
         {
             parent::__construct();
@@ -9,25 +10,20 @@
         }
 
         public function index(){
-
             $data['title'] = 'Мои ссылки';
-            $data['links'] = $this->links_model->get('user = 0');
+            $data['links'] = $this->links_model->get();
             $data['status'] = $this->get_status();
             $this->load->view('links/table', $data);
         }
 
         public function view($id){
-            $id_num = @+$id;
+
             $user = 0;
 
-            if($id_num === 0) $this->router->redirect('/links');
+            if(!is_numeric($id)) $this->error(404);
 
-            elseif(strlen($id) !== strlen($id_num)) {
-                $this->router->redirect('/links/view/' . $id_num);
-            }
-
-            $link = $this->links_model->get('id=' . $id_num)[0];
-            if(empty($link) || $link['user'] != $user) $this->router->redirect('/links');
+            $link = $this->links_model->get($id);
+            if(empty($link) || $link['user'] != $user) $this->error(404);
 
             $data['link'] = $link;
             $data['title'] = 'Просмотр ссылки  "' . $link['title'] . '"';
@@ -38,17 +34,12 @@
         }
 
         public function edit($id){
-            $id_num = @+$id;
             $user = 0;
 
-            if($id_num === 0) $this->router->redirect('/links');
+            if(!is_numeric($id)) $this->error(404);
 
-            elseif(strlen($id) !== strlen($id_num)) {
-                $this->router->redirect('/links/view/' . $id_num);
-            }
-
-            $link = $this->links_model->get('id=' . $id_num)[0];
-            if(empty($link) || $link['user'] != $user) $this->router->redirect('/links');
+            $link = $this->links_model->get($id);
+            if(empty($link) || $link['user'] != $user) $this->error(404);
 
             $data['link'] = $link;
             $data['status'] = $this->get_status();
@@ -73,19 +64,30 @@
             if(!empty($_POST)) {
                 $data = $_POST;
                 if($data['action'] == 'add'){
-                    if(!$this->links_model->add($data)) $this->router->redirect('/links/add');
+                    if(!$this->links_model->add($data)) $this->redirect('/links/add');
                 }
                 if($data['action'] == 'update'){
-                    if(!$this->links_model->update($data)) $this->router->redirect('/links/edit/' . $data['id']);
+                    if(!$this->links_model->update($data)) $this->redirect('/links/edit/' . $data['id']);
                 }
-                elseif($data['action'] == 'edit' && !empty($data['id'])) $this->router->redirect('/links/edit/' . $data['id']);
+                elseif($data['action'] == 'edit' && !empty($data['id'])) $this->redirect('/links/edit/' . $data['id']);
             }
-            $this->router->redirect('/links/');
+            $this->redirect('/links/');
         }
 
         public function delete($id){
             $this->links_model->delete($id);
-            $this->router->redirect('/links/');
+            $this->redirect('/links/');
         }
 
+        public function get_status(){
+            if(!isset($_SESSION['status'])) return null;
+
+            $status = $_SESSION['status'];
+            unset($_SESSION['status']);
+            return $status;
+        }
+
+        public function set_status(string $data){
+            $_SESSION['status'] = $data;
+        }
     }

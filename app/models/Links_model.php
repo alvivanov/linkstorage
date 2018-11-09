@@ -2,16 +2,17 @@
 
     class Links_model extends Model
     {
+
         public function add($data)
         {
             if (empty($data)) return false;
             if(empty($data['link'])){
-                $this->set_status('Поле "Ссылка" должно быть заполнено.');
+                Links::set_status('Поле "Ссылка" должно быть заполнено.');
                 return false;
             }
 
             if($this->is_link_exist($data['link'])){
-                $this->set_status('Ссылка уже существует!');
+                Links::set_status('Ссылка уже существует!');
                 return false;
             }
 
@@ -23,11 +24,11 @@
             $q = 'INSERT INTO links (title, link, description, private, user) values ("' . $title . '","' . $link . '","' . $description . '",' . $private . ', 0);';
 
             if(!$this->db->query($q)){
-                $this->set_status('Ошибка!');
+                Links::set_status('Ошибка!');
                 return false;
             }
 
-            $this->set_status('Ссылка успешно добавлена!');
+            Links::set_status('Ссылка успешно добавлена!');
             return true;
         }
 
@@ -39,19 +40,18 @@
             return false;
         }
 
-        public function get(string $where = '')
+        public function get($id = '')
         {
-            if(!empty($where)) $where = ' WHERE ' . $where;
+            if(empty($id)) $condition = '';
+            else $condition = ' WHERE id=' . $id;
 
-            $q = 'SELECT * FROM links' . $where;
+            $q = 'SELECT * FROM links' . $condition;
             $links = $this->db->query($q)->fetchAll(PDO::FETCH_ASSOC);
             if(!$links) return false;
 
-            foreach ($links as &$link){
-                preg_match('/^(https?:\/\/)|^(\/\/)/', $link['link'], $matches);
-                if(!$matches) $link['url'] = '//' . $link['link'];
-                else $link['url'] = $link['link'];
-            }
+            $links = $this->build_valid_link($links);
+
+            if(!empty($id)) return $links[0];
             return $links;
         }
 
@@ -60,22 +60,22 @@
             $q = 'DELETE FROM links WHERE id=' . $id;
 
             if(!$this->db->query($q)){
-                $this->set_status('Ошибка!');
+                Links::set_status('Ошибка!');
                 return false;
             }
 
-            $this->set_status('Ссылка успешно удалена!');
+            Links::set_status('Ссылка успешно удалена!');
             return true;
         }
 
         public function update($data)
         {
             if(empty($data['id'])){
-                $this->set_status('Ссылка не найдена!');
+                Links::set_status('Ссылка не найдена!');
                 return false;
             }
             if(empty($data['link'])){
-                $this->set_status('Поле "Ссылка" должно быть заполнено.');
+                Links::set_status('Поле "Ссылка" должно быть заполнено.');
                 return false;
             }
 
@@ -88,11 +88,20 @@
             $q = 'UPDATE links SET title="' . $title . '", link="' . $link . '", description="' . $description . '", private=' . $private . '  WHERE id=' . $id;
 
             if(!$this->db->query($q)){
-                $this->set_status('Ошибка!');
+                Links::set_status('Ошибка!');
                 return false;
             }
 
-            $this->set_status('Ссылка успешно обновлена!');
+            Links::set_status('Ссылка успешно обновлена!');
             return true;
+        }
+
+        private function build_valid_link(array $links){
+            foreach ($links as &$link){
+                preg_match('/^(https?:\/\/)|^(\/\/)/', $link['link'], $matches);
+                if(!$matches) $link['url'] = '//' . $link['link'];
+                else $link['url'] = $link['link'];
+            }
+            return $links;
         }
     }

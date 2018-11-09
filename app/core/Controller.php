@@ -1,38 +1,25 @@
 <?php
-/**
- * Created by PhpStorm.
- * Main: aleksandr
- * Date: 30/10/2018
- * Time: 00:05
- */
 
-class Controller
+class Controller extends App
 {
     public $load;
-    public $request;
-    public $router;
+    public $error_handler;
 
     public function __construct()
     {
         $this->load = new Loader($this);
-        $this->request = new Request;
-        $this->router = new Router;
 
-        $class =  $this->router->parseUrl()[0];
-        if($this->request->get($class . '/' . DEFAULT_METHOD) ){
-            $this->router->redirect('/' . strtolower($class));
-        }
     }
 
-    public function get_status(){
-        if(!isset($_SESSION['status'])) return null;
-
-        $status = $_SESSION['status'];
-        unset($_SESSION['status']);
-        return $status;
+    public function redirect(string $destination)
+    {
+        header('Location: ' . $destination);
+        die();
     }
 
-    public function set_status(string $data){
-        $_SESSION['status'] = $data;
+    public function error($status)
+    {
+        $error_handler = new Error_handler;
+        $error_handler->error($status);
     }
 }

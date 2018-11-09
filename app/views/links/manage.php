@@ -16,8 +16,8 @@
     </form>
 
 <?php if(isset($status)) : ?>
-    <br>
-    <p>Статус: </p><?=$status?>
+    <br><br>
+    <?=$status?>
 <?php endif; ?>
 
 

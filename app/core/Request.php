@@ -8,7 +8,7 @@
 
 class Request
 {
-    public function get(string $path = ''){
+    public function path(){
         $router = new Router;
         $current_url = $router->parseUrl();
         $aim_url = $router->parseUrl($path);
